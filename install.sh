@@ -74,7 +74,8 @@ else
 	if [ ! -f /opt/rustyssl ]; then
     show_progress "CRIANDO DIRETÓRIO..."
     mkdir -p /opt/rustyssl > /dev/null 2>&1
-    inc
+    increment_step
+    fi
 
     # ---->>>> Instalar rust
     show_progress "VERIFICANDO RUST..."
@@ -117,6 +118,11 @@ else
     rm -rf /root/RustySSL/
     increment_step
 
-    # ---->>>> Instalação finalizada :)
-    echo "Instalação concluída com sucesso."
+       # ---->>>> Instalação finalizada :)
+clear
+echo -e " "
+echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
+echo -e "\033[40;1;37m            INSTALAÇÃO FINALIZADA COM SUCESSO                 \E[0m"
+echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
+echo -e " "
 fi
