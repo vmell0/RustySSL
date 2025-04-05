@@ -1,5 +1,4 @@
 #!/bin/bash
-# rustyproxyssl Installer
 
 TOTAL_STEPS=9
 CURRENT_STEP=0
@@ -72,8 +71,8 @@ else
     increment_step
 
     # ---->>>> Criando o diretório do script
-    show_progress "Criando diretorio /opt/rustyproxyssl..."
-    mkdir -p /opt/rustyproxyssl > /dev/null 2>&1
+    show_progress "Criando diretorio..."
+    mkdir -p /opt/rustssl > /dev/null 2>&1
     increment_step
 
     # ---->>>> Instalar rust
@@ -85,36 +84,36 @@ else
     increment_step
 
     # ---->>>> Instalar o RustyProxySSL
-    show_progress "Compilando RustyProxySSL, isso pode levar algum tempo dependendo da maquina..."
+    show_progress "Compilando, isso pode levar algum tempo dependendo da maquina..."
 
-    if [ -d "/root/RustyProxSSLyOnly" ]; then
-        rm -rf /root/RustyProxySSLOnly
+    if [ -d "/root/RustySSL" ]; then
+        rm -rf /root/RustySSL
     fi
 
 
-    git clone --branch "main" https://github.com/UlekBR/RustyProxySSLOnly.git /root/RustyProxySSLOnly > /dev/null 2>&1 || error_exit "Falha ao clonar rustyproxy"
-    mv /root/RustyProxySSLOnly/menu.sh /opt/rustyproxyssl/menu
-    mv /root/RustyProxySSLOnly/Utils/cert.pem /opt/rustyproxyssl/cert.pem
-    mv /root/RustyProxySSLOnly/Utils/key.pem /opt/rustyproxyssl/key.pem
+    git clone --branch "main" https://github.com/vmell0/RustySSL.git /root/RustySSL > /dev/null 2>&1 || error_exit "Falha ao clonar"
+    mv /root/RustySSL/menu.sh /opt/rustyssl/menu
+    mv /root/RustySSL/Utils/cert.pem /opt/rustyssl/cert.pem
+    mv /root/RustySSL/Utils/key.pem /opt/rustyssl/key.pem
 
-    cd /root/RustyProxySSLOnly/RustyProxy
-    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar rustyproxy"
-    mv ./target/release/RustyProxySSL /opt/rustyproxyssl/proxyssl
+    cd /root/RustySSL/RustyProxy
+    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar"
+    mv ./target/release/RustySSL /opt/rustyssl/proxyssl
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
-    chmod +x /opt/rustyproxyssl/proxyssl
-    chmod +x /opt/rustyproxyssl/menu
-    ln -sf /opt/rustyproxyssl/menu /usr/local/bin/rustyproxyssl
+    chmod +x /opt/rustyssl/proxyssl
+    chmod +x /opt/rustyssl/menu
+    ln -sf /opt/rustyssl/menu /usr/local/bin/proxyssl
     increment_step
 
     # ---->>>> Limpeza
     show_progress "Limpando diretórios temporários..."
     cd /root/
-    rm -rf /root/RustyProxySSLOnly/
+    rm -rf /root/RustySSL/
     increment_step
 
     # ---->>>> Instalação finalizada :)
-    echo "Instalação concluída com sucesso. Digite 'rustyproxyssl' para acessar o menu."
+    echo "Instalação concluída com sucesso."
 fi

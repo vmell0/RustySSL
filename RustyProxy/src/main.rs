@@ -102,7 +102,7 @@ fn get_port() -> u16 {
 
 fn get_cert() -> String {
     let args: Vec<String> = env::args().collect();
-    let mut cert = String::from("/opt/rustyproxyssl/cert.pem");
+    let mut cert = String::from("/opt/rustyssl/cert.pem");
 
     for i in 1..args.len() {
         if args[i] == "--cert" {
@@ -117,7 +117,7 @@ fn get_cert() -> String {
 
 fn get_key() -> String {
     let args: Vec<String> = env::args().collect();
-    let mut key = String::from("/opt/rustyproxyssl/key.pem");
+    let mut key = String::from("/opt/rustyssl/key.pem");
 
     for i in 1..args.len() {
         if args[i] == "--key" {

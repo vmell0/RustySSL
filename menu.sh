@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PORTS_FILE="/opt/rustyproxyssl/ports"
+PORTS_FILE="/opt/rustyssl/ports"
 
 # Função para verificar se uma porta está em uso
 is_port_in_use() {
@@ -21,14 +21,14 @@ add_proxy_port() {
     local port=$1
 
     if is_port_in_use $port; then
-        echo "A porta $port já está em uso."
+        echo "A PORTA $port JÁ ESTÁ EM USO."
         return
     fi
 
-    local command="/opt/rustyproxyssl/proxyssl --proxy-port $port"
+    local command="/opt/rustyssl/proxyssl --proxy-port $port"
     local service_file_path="/etc/systemd/system/proxyssl${port}.service"
     local service_file_content="[Unit]
-Description=RustyProxySSL${port}
+Description=RustySSL${port}
 After=network.target
 
 [Service]
@@ -55,7 +55,7 @@ WantedBy=multi-user.target"
 
     # Salvar a porta no arquivo
     echo $port >> "$PORTS_FILE"
-    echo "Porta $port aberta com sucesso."
+    echo "Porta $port ABERTA COM SUCESSO."
 }
 
 # Função para fechar uma porta de proxy
@@ -69,60 +69,117 @@ del_proxy_port() {
 
     # Remover a porta do arquivo
     sed -i "/^$port$/d" "$PORTS_FILE"
-    echo "Porta $port fechada com sucesso."
+    echo "Porta $port FECHADA COM SUCESSO."
+}
+
+#FUNÇÃO PARA DESINSTALAR RUSTY PROXY
+    uninstall_rustyssl() {
+    echo "DESINSTALANDO PROXYSSL, AGUARDE..."
+    sleep 3
+    clear
+
+#REMOVER TODOS OS SERVIÇOS
+    if [ -s "$PORTS_FILE" ]; then
+        while read -r port; do
+            del_proxy_port $port
+        done < "$PORTS_FILE"
+    fi
+	
+	#REMOVER BINÁRIOS, ARQUIVOS E DIRETÓRIOS
+    sudo rm -rf /opt/rustyssl
+    sudo rm -f "$PORTS_FILE"
+
+    echo -e "\033[0;34m---------------------------------------------------------\033[0m"
+    echo -e "\033[40;1;37m           PROXYSSL DESINSTALADO COM SUCESSO.          \E[0m"
+    echo -e "\033[0;34m---------------------------------------------------------\033[0m"
+    sleep 4
+    clear
+}
+
+#FUNÇÃO PARA REINICIAR TODAS AS PORTAS PROXYS ABERTAS
+restart_all_proxies() {
+    if [ ! -s "$PORTS_FILE" ]; then
+        echo "NENHUMA PORTA ENCONTRADA PARA REINICIAR."
+        return
+    fi
+
+    echo "REINICIANDO TODAS AS PORTAS..."
+    while read -r line; do
+        port=$(echo "$line" | awk '{print $1}')
+        del_proxy_port "$port"
+        add_proxy_port "$port"
+    done < "$PORTS_FILE"
+
+    echo "✅ TODAS AS PORTAS FORAM REINICIADAS COM SUCESSO."
+    sleep 3
+    clear
 }
 
 # Função para exibir o menu formatado
 show_menu() {
     clear
-    echo "================= @RustyManager ================"
-    echo "------------------------------------------------"
-    printf "|                  %-28s|\n" "RUSTY PROXY SSL"
-    echo "------------------------------------------------"
-    
-    # Verifica se há portas ativas
+    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
+    echo -e "\033[40;1;37m                 ⚒ PROXY-SSL MANAGER ⚒                   \033[0m"
+    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
+    #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
-        printf "| Portas(s): %-34s|\n" "nenhuma"
+        printf "NENHUMA PORTA %-34s\n" ""
     else
-        active_ports=""
-        while read -r port; do
-            active_ports+=" $port"
+        while read -r line; do
+            port=$(echo "$line" | awk '{print $1}')
+            status=$(echo "$line" | cut -d' ' -f2-)
+            printf " PORTA: %-5s \033[1;31m%s\033[0m\n" "$port"
         done < "$PORTS_FILE"
-        printf "| Portas(s):%-35s|\n" "$active_ports"
     fi
-
-    echo "------------------------------------------------"
-    printf "| %-45s|\n" "1 - Abrir Porta"
-    printf "| %-45s|\n" "2 - Fechar Porta"
-    printf "| %-45s|\n" "0 - Voltar ao menu"
-    echo "------------------------------------------------"
+    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
+    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;34m◉ \033[1;33mABRIR PORTA \033[1;31m
+[\033[1;36m02\033[1;31m] \033[1;34m◉ \033[1;33mFECHAR PORTA \033[1;31m
+[\033[1;36m03\033[1;31m] \033[1;34m◉ \033[1;33mREINICIAR PORTA \033[1;31m
+[\033[1;36m04\033[1;31m] \033[1;34m◉ \033[1;33mREMOVER SCRIPT \033[1;31m
+[\033[1;36m00\033[1;31m] \033[1;34m◉ \033[1;33mVOLTAR \033[1;31m"
+    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
     echo
-    read -p " --> Selecione uma opção: " option
+    read -p "  OPÇÃO: " option
 
     case $option in
         1)
-            read -p "Digite a porta: " port
+            read -p "PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
-                echo "Digite uma porta válida."
-                read -p "Digite a porta: " port
+                echo "DIGITE UMA PORTA VÁLIDA."
+                read -p "PORTA: " port
             done
             add_proxy_port $port "$status"
-            read -p "> Porta ativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
+			echo -e "\n\033[1;31m✅ PORTA ATIVADA COM SUCESSO."
+			sleep 2
             ;;
         2)
-            read -p "Digite a porta: " port
+            read -p "PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
-                echo "Digite uma porta válida."
-                read -p "Digite a porta: " port
+                echo "DIGITE UMA PORTA VÁLIDA."
+                read -p "PORTA: " port
             done
             del_proxy_port $port
-            read -p "> Porta desativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
+			echo -e "\n\033[1;31m✅ PORTA DESATIVADA."
+			sleep 2
             ;;
+		3)
+		    clear
+            restart_all_proxies
+			echo -e "\n\033[1;31m✅ PORTAS REINICIADAS."
+			sleep 2
+		    ;;
+		4)
+		    clear
+            uninstall_rustyssl
+            read -p "◉ PRESSIONE QUALQUER TC PARA SAIR." dummy
+	        clear
+            exit 0
+		    ;;
         0)
             exit 0
             ;;
         *)
-            echo "Opção inválida. Pressione qualquer tecla para voltar ao menu."
+            echo "OPÇÃO INVÁLIDA. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU."
             read -n 1 dummy
             ;;
     esac
