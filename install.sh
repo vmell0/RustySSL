@@ -109,7 +109,7 @@ else
     show_progress "Configurando permissões..."
     chmod +x /opt/rustyssl/proxyssl
     chmod +x /opt/rustyssl/menu
-    ln -sf /opt/rustyssl/menu /usr/local/bin/proxyssl
+    ln -sf /opt/rustyssl/menu /usr/local/bin/menussl
     increment_step
 
     # ---->>>> Limpeza
