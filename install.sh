@@ -71,14 +71,17 @@ else
     increment_step
 
     # ---->>>> Criando o diretório do script
-    show_progress "Criando diretorio..."
-    mkdir -p /opt/rustssl > /dev/null 2>&1
-    increment_step
+	if [ ! -f /opt/rustyssl ]; then
+    show_progress "CRIANDO DIRETÓRIO..."
+    mkdir -p /opt/rustyssl > /dev/null 2>&1
+    inc
 
     # ---->>>> Instalar rust
-    show_progress "Instalando Rust..."
+    show_progress "VERIFICANDO RUST..."
     if ! command -v rustc &> /dev/null; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y > /dev/null 2>&1 || error_exit "Falha ao instalar Rust"
+        echo 'source "$HOME/.cargo/env"' >> ~/.bashrc
+        echo 'source "$HOME/.cargo/env"' >> ~/.zshrc
         source "$HOME/.cargo/env"
     fi
     increment_step
