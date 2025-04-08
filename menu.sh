@@ -161,7 +161,7 @@ show_menu() {
     echo -e "\033[0;36m╔════════════•⊱✦⊰•════════════╗\033[0m"
     #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
-        printf "033[1;33m  NENHUMA PORTA %-34s\n" ""
+        printf "  NENHUMA PORTA %-34s\n" ""
     else
         while read -r line; do
             port=$(echo "$line" | awk '{print $1}')
