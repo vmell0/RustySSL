@@ -74,8 +74,8 @@ else
 	if [ ! -f /opt/rustyssl ]; then
     show_progress "CRIANDO DIRETÓRIO..."
     mkdir -p /opt/rustyssl > /dev/null 2>&1
-    increment_step
     fi
+	increment_step
 
     # ---->>>> Instalar rust
     show_progress "VERIFICANDO RUST..."
