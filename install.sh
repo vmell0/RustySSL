@@ -93,6 +93,7 @@ else
     if [ -d "/root/RustySSL" ]; then
         rm -rf /root/RustySSL
 		rm -rf /opt/rustyssl
+		mkdir -p /opt/rustyssl > /dev/null 2>&1
     fi
 
     git clone --branch "main" https://github.com/vmell0/RustySSL.git /root/RustySSL > /dev/null 2>&1 || error_exit "Falha ao clonar"
