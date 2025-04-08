@@ -23,13 +23,13 @@ else
     clear
     show_progress "Atualizando repositorios..."
     export DEBIAN_FRONTEND=noninteractive
-    apt update -y > /dev/null 2>&1 || error_exit "Falha ao atualizar os repositorios"
+    apt update -y &> /dev/null || error_exit "Falha ao atualizar os repositorios"
     increment_step
 
     # ---->>>> Verificação do sistema
     show_progress "Verificando o sistema..."
     if ! command -v lsb_release &> /dev/null; then
-        apt install lsb-release -y > /dev/null 2>&1 || error_exit "Falha ao instalar lsb-release"
+        apt install lsb-release -y &> /dev/null || error_exit "Falha ao instalar lsb-release"
     fi
     increment_step
 
@@ -92,8 +92,8 @@ else
 
     if [ -d "/root/RustySSL" ]; then
         rm -rf /root/RustySSL
+		rm -rf /opt/rustyssl
     fi
-
 
     git clone --branch "main" https://github.com/vmell0/RustySSL.git /root/RustySSL > /dev/null 2>&1 || error_exit "Falha ao clonar"
     mv /root/RustySSL/menu.sh /opt/rustyssl/menu
