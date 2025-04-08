@@ -90,7 +90,7 @@ del_proxy_port() {
     sudo rm -f "$PORTS_FILE"
 
     echo -e "\033[0;34m---------------------------------------------------------\033[0m"
-    echo -e "\033[40;1;37m           PROXYSSL DESINSTALADO COM SUCESSO.          \E[0m"
+    echo -e "\033[40;1;37m           SSL DESINSTALADO COM SUCESSO.          \E[0m"
     echo -e "\033[0;34m---------------------------------------------------------\033[0m"
     sleep 4
     clear
@@ -122,13 +122,15 @@ show_menu() {
     echo -e "\033[0;36m╔════════════•⊱✦⊰•════════════╗\033[0m"
     #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
+        printf "  NENHUMA PORTA %-34s\n" ""
+    else
         while read -r line; do
             port=$(echo "$line" | awk '{print $1}')
             status=$(echo "$line" | cut -d' ' -f2-)
-            printf "   \033[1;33mPORTA: \033[1;32m %-5s \033[1;32m%s\033[0m\n" "$port"
+            printf "  PORTA: %-5s \033[1;31m%s\033[0m\n" "$port"
         done < "$PORTS_FILE"
-	    echo -e "\033[0;36m° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °\033[0m"
     fi
+    echo -e "\033[0;36m° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °\033[0m"
     echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;37m• \033[1;37mABRIR PORTA \033[1;31m
 [\033[1;36m02\033[1;31m] \033[1;37m• \033[1;37mFECHAR PORTA \033[1;31m
 [\033[1;36m03\033[1;31m] \033[1;37m• \033[1;37mREINICIAR PORTA \033[1;31m
@@ -139,6 +141,7 @@ show_menu() {
     read option
     case $option in
         1 | 01)
+		    echo ""
             read -p "PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "DIGITE UMA PORTA VÁLIDA."
@@ -149,6 +152,7 @@ show_menu() {
 			sleep 2
             ;;
         2 | 02)
+		    echo ""
             read -p "PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "DIGITE UMA PORTA VÁLIDA."
