@@ -73,7 +73,7 @@ del_proxy_port() {
 }
 
 #FUNÇÃO PARA DESINSTALAR RUSTY PROXY
-    uninstall_rustyssl() {
+uninstall_rustyssl() {
     echo "DESINSTALANDO PROXYSSL, AGUARDE..."
     sleep 3
     clear
@@ -94,6 +94,45 @@ del_proxy_port() {
     echo -e "\033[0;34m---------------------------------------------------------\033[0m"
     sleep 4
     clear
+}
+
+executar_comando() {
+    local comando="$1"
+    local mensagem="$2"
+    local delay=0.1
+    local percent=0
+    local bar=""
+
+    echo -e "${YELLOW}${mensagem:0:50}${NC}"
+    echo -n ' '
+    
+    eval "$comando" & local cmd_pid=$!
+    
+    while kill -0 $cmd_pid 2>/dev/null; do
+        percent=$((percent + 1))
+        if [ $percent -ge 100 ]; then
+            percent=100
+        fi
+        echo -ne "       \r$percent% [${bar:0:$((percent / 5))}]"
+        sleep $delay
+        bar=$(printf "%-30s" | tr ' ' '#')
+    done
+
+    wait $cmd_pid
+    if [ $? -eq 0 ]; then
+        percent=100
+        echo -ne "       \r$percent% [${bar:0:20}]\n"
+    else
+        echo -e "\r${RED}Erro ao executar o comando.${NC}"
+    fi
+    
+    echo
+    sleep 1
+}
+
+atualizar_script() {
+    uninstall_rustyssl
+	bash <(wget -qO- https://raw.githubusercontent.com/vmell0/RustySSL/refs/heads/main/install.sh)
 }
 
 #FUNÇÃO PARA REINICIAR TODAS AS PORTAS PROXYS ABERTAS
@@ -134,7 +173,8 @@ show_menu() {
     echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;37m• \033[1;37mABRIR PORTA \033[1;31m
 [\033[1;36m02\033[1;31m] \033[1;37m• \033[1;37mFECHAR PORTA \033[1;31m
 [\033[1;36m03\033[1;31m] \033[1;37m• \033[1;37mREINICIAR PORTA \033[1;31m
-[\033[1;36m04\033[1;31m] \033[1;37m• \033[1;37mREMOVER SCRIPT \033[1;31m
+[\033[1;36m04\033[1;31m] \033[1;37m• \033[1;37mATUALIZAR SCRIPT \033[1;31m
+[\033[1;36m05\033[1;31m] \033[1;37m• \033[1;37mREMOVER SCRIPT \033[1;31m
 [\033[1;36m00\033[1;31m] \033[1;37m• \033[1;37mVOLTAR \033[1;31m"
     echo -e "\033[0;36m╚════════════•⊱✦⊰•════════════╝\033[0m"
     echo -ne "  \033[1;31m➤ \033[1;32mOPÇÃO\033[1;33m\033[1;31m\033[1;37m: ";
@@ -170,6 +210,13 @@ show_menu() {
 		    ;;
 		4 | 04)
 		    clear
+            echo ""
+            executar_comando "atualizar_script &> /dev/null" "ATUALIZANDO SCRIPT"
+			clear
+	        menussl
+		    ;;
+		5 | 05)
+		    clear
             uninstall_rustyssl
             read -p "◉ PRESSIONE QUALQUER TC PARA SAIR." dummy
 	        clear
@@ -177,7 +224,7 @@ show_menu() {
 		    ;;
         0 | 00)
 		    clear
-            menu_proxy
+            conexao
             ;;
         *)
             echo "OPÇÃO INVÁLIDA. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU."
