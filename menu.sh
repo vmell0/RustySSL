@@ -118,9 +118,8 @@ restart_all_proxies() {
 # Função para exibir o menu formatado
 show_menu() {
     clear
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo -e "\033[40;1;37m                 ⚒ PROXY-SSL MANAGER ⚒                   \033[0m"
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
+    echo -e "\E[44;1;37m          MULTI-SSL            \E[0m"
+    echo -e "\033[0;36m╔════════════•⊱✦⊰•════════════╗\033[0m"
     #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
         printf "NENHUMA PORTA %-34s\n" ""
@@ -131,18 +130,17 @@ show_menu() {
             printf " PORTA: %-5s \033[1;31m%s\033[0m\n" "$port"
         done < "$PORTS_FILE"
     fi
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;34m◉ \033[1;33mABRIR PORTA \033[1;31m
-[\033[1;36m02\033[1;31m] \033[1;34m◉ \033[1;33mFECHAR PORTA \033[1;31m
-[\033[1;36m03\033[1;31m] \033[1;34m◉ \033[1;33mREINICIAR PORTA \033[1;31m
-[\033[1;36m04\033[1;31m] \033[1;34m◉ \033[1;33mREMOVER SCRIPT \033[1;31m
-[\033[1;36m00\033[1;31m] \033[1;34m◉ \033[1;33mVOLTAR \033[1;31m"
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo
-    read -p "  OPÇÃO: " option
-
+    echo -e "\033[0;36m° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °\033[0m"
+    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;37m• \033[1;37mABRIR PORTA \033[1;31m
+[\033[1;36m02\033[1;31m] \033[1;37m• \033[1;37mFECHAR PORTA \033[1;31m
+[\033[1;36m03\033[1;31m] \033[1;37m• \033[1;37mREINICIAR PORTA \033[1;31m
+[\033[1;36m04\033[1;31m] \033[1;37m• \033[1;37mREMOVER SCRIPT \033[1;31m
+[\033[1;36m00\033[1;31m] \033[1;37m• \033[1;37mVOLTAR \033[1;31m"
+    echo -e "\033[0;36m╚════════════•⊱✦⊰•════════════╝\033[0m"
+    echo -ne "  \033[1;31m➤ \033[1;32mOPÇÃO\033[1;33m\033[1;31m\033[1;37m: ";
+    read option
     case $option in
-        1)
+        1 | 01)
             read -p "PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "DIGITE UMA PORTA VÁLIDA."
@@ -152,7 +150,7 @@ show_menu() {
 			echo -e "\n\033[1;31m✅ PORTA ATIVADA COM SUCESSO."
 			sleep 2
             ;;
-        2)
+        2 | 02)
             read -p "PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "DIGITE UMA PORTA VÁLIDA."
@@ -162,21 +160,22 @@ show_menu() {
 			echo -e "\n\033[1;31m✅ PORTA DESATIVADA."
 			sleep 2
             ;;
-		3)
+		3 | 03)
 		    clear
             restart_all_proxies
 			echo -e "\n\033[1;31m✅ PORTAS REINICIADAS."
 			sleep 2
 		    ;;
-		4)
+		4 | 04)
 		    clear
             uninstall_rustyssl
             read -p "◉ PRESSIONE QUALQUER TC PARA SAIR." dummy
 	        clear
             exit 0
 		    ;;
-        0)
-            exit 0
+        0 | 00)
+		    clear
+            menu_proxy
             ;;
         *)
             echo "OPÇÃO INVÁLIDA. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU."
