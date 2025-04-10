@@ -100,12 +100,12 @@ else
     mv /root/RustySSL/Utils/key.pem /opt/rustyssl/key.pem
     cd /root/RustySSL/RustyProxy
     cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar"
-    mv ./target/release/RustySSL /opt/rustyssl/proxyssl
+    mv ./target/release/RustySSL /opt/rustyssl/multissl
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
-    chmod +x /opt/rustyssl/proxyssl
+    chmod +x /opt/rustyssl/multissl
     chmod +x /opt/rustyssl/menu
 	chmod +x /opt/rustyssl/cert.pem
 	chmod +x /opt/rustyssl/key.pem

@@ -25,8 +25,8 @@ add_proxy_port() {
         return
     fi
 
-    local command="/opt/rustyssl/proxyssl --proxy-port $port"
-    local service_file_path="/etc/systemd/system/proxyssl${port}.service"
+    local command="/opt/rustyssl/multissl --proxy-port $port"
+    local service_file_path="/etc/systemd/system/multissl${port}.service"
     local service_file_content="[Unit]
 Description=RustySSL${port}
 After=network.target
@@ -50,8 +50,8 @@ WantedBy=multi-user.target"
 
     echo "$service_file_content" | sudo tee "$service_file_path" > /dev/null
     sudo systemctl daemon-reload
-    sudo systemctl enable "proxyssl${port}.service"
-    sudo systemctl start "proxyssl${port}.service"
+    sudo systemctl enable "multissl${port}.service"
+    sudo systemctl start "multissl${port}.service"
 
     # Salvar a porta no arquivo
     echo $port >> "$PORTS_FILE"
@@ -62,9 +62,9 @@ WantedBy=multi-user.target"
 del_proxy_port() {
     local port=$1
 
-    sudo systemctl disable "proxyssl${port}.service"
-    sudo systemctl stop "proxyssl${port}.service"
-    sudo rm -f "/etc/systemd/system/proxyssl${port}.service"
+    sudo systemctl disable "multissl${port}.service"
+    sudo systemctl stop "multissl${port}.service"
+    sudo rm -f "/etc/systemd/system/multissl${port}.service"
     sudo systemctl daemon-reload
 
     # Remover a porta do arquivo
@@ -74,7 +74,7 @@ del_proxy_port() {
 
 #FUNÇÃO PARA DESINSTALAR RUSTY PROXY
 uninstall_rustyssl() {
-    echo "DESINSTALANDO PROXYSSL, AGUARDE..."
+    echo "DESINSTALANDO MULTI-SSL, AGUARDE..."
     sleep 3
     clear
 
